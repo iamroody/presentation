@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>MongoDB</title>
+
+		<meta name="description" content="introduction of MongoDB">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+		<link rel="stylesheet" href="css/custom.css">
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+					<h1>MongoDB</h1>
+				</section>
+
+				<section>
+					<h2>not Mango</h2>
+					<h2>but Hu<strong style="color:#71e9f4">mongo</strong>us</h2>
+
+				</section>
+
+				<section>
+					<h2>Nosql</h2>
+					<p>"non-relational" or "not only SQL"</p>
+				</section>
+
+				<section>
+					<h2>WEB 2.0 需要</h2>
+					<ul>
+						<li>更高的性能 </li>
+						<li>更大的存储</li>
+						<li>更活的扩展</li>
+					</ul>
+
+				</section>
+
+				<section>
+					<h2>但是, 可能并不需要</h2>
+					<ul>
+						<li>1. 数据库事务一致性需求</li>
+						<li>2. 数据库的写实时性和读实时性需求</li>
+						<li>3. 对复杂的SQL查询，特别是多表关联查询的需求</li>					
+					</ul>
+
+				</section>
+
+				<section>
+					<h2>百花齐放的 Nosql 家族(150+)</h2>
+					<ul>
+						<li>1. 列存储: Hbase, Cassandra, Hypertable</li>
+						<li>2. 文档存储: MongoDB, CouchDB</li>
+						<li>3. key-value存储: MemcacheDB, Redis</li>					
+						<li>4. 图存储: Neo4J</li>					
+						<li>5. 对象存储: db4o </li>
+						<li>6. xml数据库: BaseX, Berkeley DB XML </li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>为什么选 MongoDB ？</h2>
+				</section>
+
+				<section>
+					<h2>开始了解 MongoDB</h2>
+					<ul>
+						<li> C++ </li>
+						<li>基于文档，Schema-free</li>
+						<li>V8 JavaScript engine</li>
+						<li>BSON</li>
+						<li>最新版2.4.5发布于7/3/2013</li>
+					</ul>
+
+				</section>
+
+				<section>
+					<h2>概念对应</h2>
+					<ul>
+						<li>database => database</li>
+						<li>collection => table</li>
+						<li>document => row</li>
+						<li>key => column name</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>增</h2>
+					<pre><code>
+iamroody:mongodb twer$ mongo
+MongoDB shell version: 2.4.5
+connecting to: test
+Welcome to the MongoDB shell.
+$: use rubyists
+$: var wang= {"name": "wangyan", age: 23}
+$: db.user.insert(wang)
+{ "_id" : ObjectId("51e9d7a8fbf279e5a44a8435"), "name" : "wangyan", "age" : 23 }
+					</code></pre>
+					<aside class="notes">
+						进入mongo shell, 一个支持js的客户端, 数据库的增删改查就像理发店的“洗剪吹”一样，肯定是要来过一下的。
+					</aside>
+				</section>
+
+				<section>
+					<h2>删</h2>
+					<pre><code>
+$: db.user.remove({"name":"wangyan"})
+$: db.user.remove()
+$: db.drop.collection("user") # more fast
+					</code></pre>
+					<aside class="notes">
+					</aside>
+				</section>
+
+				<section>
+					<h2>改</h2>
+					<pre><code>
+$: db.user.update({"name":"wangyan"}, {"$set": {"age": 25}})
+$: db.user.update({"name":"wangyan"}, {"$inc": {"age": 1}})
+$: db.user.update({"name":"Andy"}, {"$set": {"age": 28}}, true) #upsert
+					</code></pre>
+					<aside class="notes">
+					</aside>
+				</section>
+
+				<section>
+					<h2>查</h2>
+					<ul>
+						<li>find 查询条件： $lt $lte $gt $gte $ne $or $not $size $slice</li>
+						<pre><code>$: db.user.find({"name":"wangyan", "age": {"$gt": 24}})</code></pre>
+						<li>正则表达式</li>
+						<pre><code>$: db.user.find({"name":/wangyan/i})</code></pre>						
+						<li>$where 查询</li>
+						<pre><code>$: db.user.find({"$where": "function() { return this.x + this.y == 10";}})</code></pre>			
+						<pre><code>$: db.user.find({"$where": "this.x + this.y == 10"})</code></pre>						
+					</ul>
+					<aside class="notes">
+					</aside>
+				</section>
+
+				<section>
+					<h2>熟悉而又新鲜的INDEX</h2>
+				</section>
+
+				<section>
+					<h2>GeoIndex 地理空间索引</h2>
+					<ul>
+					<li>假如有这样的一些数据</li>
+					<pre><code>{"gps": {"x": -30, "y": 30}} {"gps": {"latitude": 120.32, "longitude": 32.21}}</code></pre>
+					<li>创建空间索引</li>
+					<pre><code>$: db.map.ensureIndex({"gps": "2d"})</code></pre>
+					<li>检索</li>
+					<pre><code>$: db.map.find({"gps": {"$near": [21, 32]}}})</code></pre>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Aggregation Framework 聚合</h2>
+				</section>
+
+				<section>
+					<h2>基本 count distinct group</h2>
+				</section>
+
+				<section>
+					<h2>MapReduce</h2>
+					<p class="fragment">将大批量的任务（data）分解（Map）执行，再将数据结果合并成最终结果（Reduce）</p>
+				</section>
+
+				<section>
+					<h2>MapReduce 步骤</h2>
+					<ul>
+						<li> 1. Map 映射 </li>
+						<small class="fragment">将操作映射到集合中的每一个文档上，里面会调用<code>emit(key, value)</code> ，根据key值映射分组成key-values，其中values就是emit出来的valude的集合。</small>
+						<li>2. Reduce 简化</li>
+						<small class="fragment">对map分组后的数据进行分组简化，将key-values中的valudes进行reduce，最终处理成 key-summary 的键值对</small>
+						<li>3. MapReduce 执行</li>
+						<small class="fragment">调用map和reduce函数输出结果</small>
+						<li>4. Finalize 完成器</li>
+						<small class="fragment">对reduce()的结果再处理，如精简，计算平均数等</small>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Examples： 计算tag的个数</h2>
+					<pre><code>
+{ "_id" : 1, "name" : "blog1", "tags" : [  "dog",  "cat" ] }
+{ "_id" : 2, "name" : "blog2", "tags" : [  "dog",  "cat",  "cow",  "fish" ] }
+{ "_id" : 3, "name" : "blog2", "tags" : [  "cat" ] }
+{ "_id" : 4, "name" : "blog4", "tags" : [  "cow",  "fish" ] }
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Map</h2>
+					<pre><code>
+map = function() {
+	for (var key in this.tags) {
+		emit(this.tags[key], {count: 1})
+	}
+}
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Reduce</h2>
+					<pre><code>
+reduce = function(key, values) {
+	total = 0;
+	for (var i in values) {
+		total += values[i].count;
+	}
+	return {"count": total};
+}
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>MapReduce</h2>
+					<pre><code>
+$:  res = db.blog.mapReduce(map,reduce, "tag-counts");
+{
+	"result" : "tag-counts",
+	"timeMillis" : 5,
+	"counts" : {
+		"input" : 4,
+		"emit" : 9,
+		"reduce" : 2,
+		"output" : 4
+	},
+	"ok" : 1,
+}
+$: db[res.result].find()
+{ "_id" : "cat", "value" : { "count" : 3 } }
+{ "_id" : "cow", "value" : { "count" : 2 } }
+{ "_id" : "dog", "value" : { "count" : 2 } }
+{ "_id" : "fish", "value" : { "count" : 2 } }
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Fail Over 故障处理</h2>
+				</section>
+
+				<section>
+					<h2>Master-Slave ？</h2>
+				</section>
+
+				<section>
+					<h2>Replica Set 复制集合</h2>
+				</section>
+
+				<section>
+					<img width="800" height="550" src="images/replication.png">				
+				</section>
+
+				<section>
+					<h2>Replica Set 成员</h2>
+					<ol>
+						<li>Primary</li>
+						<li>Secondary</li>
+						<li>Arbiter(专用于投票)</li>
+					</ol>
+				</section>
+
+				<section>
+					<h2>Replica Set 选举机制</h2>
+					<img width="800" height="550" src="images/elect.png">
+				</section>
+
+				<section>
+					<h2>分片 Sharding</h2>
+					<p class="fragment">将集合数据拆分存储在不同的机器上</p>
+				</section>
+
+				<section>
+					<img src="images/sharding.png">
+					<aside class="notes">
+					
+					</aside>
+				</section>
+
+				<section>
+					<h2>片键 shard key</h2>
+					<p class="fragment">数据拆分的依据</p>
+				</section>
+
+				<section>
+					<img src="images/sharding-config.png">
+					<aside class="notes">
+					
+					</aside>
+				</section>
+
+				<section>
+					<h2>一些新东西</h2>
+				</section>
+
+				<section>
+					<h2>Capped Collections 定容集合</h2>
+					<ul>
+						<li>固定大小</li>
+						<li>LRU 最近最少使用规则</li>
+						<li>age-out 老化移出</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2> Text Search </h2>
+					<p>从mongodb 2.4新推出的功能</p>
+				</section>
+
+				<section>
+					<h2> GridFS </h2>
+				</section>
+
+				<section>
+					<h2>Ruby Gems</h2>
+					<ul>
+						<li>Mongoid 3.1.0 (推荐)</li>
+						<li>Mongomapper 0.12.0</li>
+					</ul>
+				</section>
+
+				<!-- Example of nested vertical slides -->
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
